@@ -9,6 +9,14 @@ Corrections for the DELPHI open data in EDM4hep format, stored as
 |---|---|---|
 | [`tracking/`](tracking/README.md) | charged-track momentum scale | 94C2, 95D2 (data) |
 
+## Browsing the corrections
+
+The [web page](https://delphi-fulldst-edm4hep.github.io/delphi-correctionlib/) lists the
+corrections and evaluates and plots them in the browser, with correctionlib compiled to
+WebAssembly. It is published from `main` by
+[correctionlib-viewer](https://github.com/DickyChant/correctionlib-viewer), and also opens
+any correctionlib file you drop on it.
+
 ## Dependencies
 
 You need correctionlib (Python and C++, version 2.6 or later). The scripts in

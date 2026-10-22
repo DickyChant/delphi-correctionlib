@@ -1,0 +1,52 @@
+# Publishes the corrections to GitHub Pages with correctionlib-viewer
+# (https://github.com/DickyChant/correctionlib-viewer): a page that lists them
+# and evaluates and plots them in the browser, with correctionlib compiled to
+# WebAssembly. The action also checks that build against correctionlib's Python
+# package on every correction here.
+#
+# Pull requests build and check only. Pages has to be set to "GitHub Actions"
+# in the repository settings once, for the deploy job.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0          # the page dates each file by its last commit
+
+      - uses: DickyChant/correctionlib-viewer@dc3f2d2327de9c2e659edc1eee7d6bf3f2dd9263 # v1.1.0
+        with:
+          title: DELPHI correctionlib
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
